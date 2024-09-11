@@ -1,10 +1,9 @@
 import { Form, useLoaderData, redirect, useNavigate } from "react-router-dom";
 import { updateContact } from "../contacts";
+import { useState, useEffect } from "react";
 
 export async function action({ request, params }) {
     const formData = await request.formData();
-    const firstName = formData.get("first");
-    const lastName = formData.get("last");
     const updates = Object.fromEntries(formData);
     await updateContact(params.contactId, updates);
     return redirect(`/contacts/${params.contactId}`);
@@ -13,6 +12,35 @@ export async function action({ request, params }) {
 export default function EditContact() {
     const { contact } = useLoaderData();
     const navigate = useNavigate();
+
+    // Initialize state with contact data
+    const [formData, setFormData] = useState({
+        first: contact?.first || "",
+        last: contact?.last || "",
+        twitter: contact?.twitter || "",
+        avatar: contact?.avatar || "",
+        notes: contact?.notes || ""
+    });
+
+    // Update state when contact data changes
+    useEffect(() => {
+        setFormData({
+            first: contact?.first || "",
+            last: contact?.last || "",
+            twitter: contact?.twitter || "",
+            avatar: contact?.avatar || "",
+            notes: contact?.notes || ""
+        });
+    }, [contact]);
+
+    // Handle input changes
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData((prevData) => ({
+            ...prevData,
+            [name]: value
+        }));
+    };
 
     return (
         <Form method="post" id="contact-form">
@@ -23,14 +51,16 @@ export default function EditContact() {
                     aria-label="First name"
                     type="text"
                     name="first"
-                    defaultValue={contact?.first}
+                    value={formData.first}
+                    onChange={handleChange}
                 />
                 <input
                     placeholder="Last"
                     aria-label="Last name"
                     type="text"
                     name="last"
-                    defaultValue={contact?.last}
+                    value={formData.last}
+                    onChange={handleChange}
                 />
             </p>
             <label>
@@ -39,7 +69,8 @@ export default function EditContact() {
                     type="text"
                     name="twitter"
                     placeholder="@jack"
-                    defaultValue={contact?.twitter}
+                    value={formData.twitter}
+                    onChange={handleChange}
                 />
             </label>
             <label>
@@ -49,14 +80,16 @@ export default function EditContact() {
                     aria-label="Avatar URL"
                     type="text"
                     name="avatar"
-                    defaultValue={contact?.avatar}
+                    value={formData.avatar}
+                    onChange={handleChange}
                 />
             </label>
             <label>
                 <span>Notes</span>
                 <textarea
                     name="notes"
-                    defaultValue={contact?.notes}
+                    value={formData.notes}
+                    onChange={handleChange}
                     rows={6}
                 />
             </label>

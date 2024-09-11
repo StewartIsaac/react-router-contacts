@@ -1,4 +1,4 @@
-import { Form, useLoaderData, useFetcher, } from "react-router-dom";
+import { Form, useLoaderData, useFetcher } from "react-router-dom";
 import { getContact, updateContact } from "../contacts";
 
 export async function action({ request, params }) {
@@ -20,15 +20,7 @@ export async function loader({ params }) {
 }
 
 export default function Contact() {
-    let { contact } = useLoaderData;
-    contact = {
-        first: "Your",
-        last: "Name",
-        avatar: "https://robohash.org/you.png?size=200x200",
-        twitter: "your_handle",
-        notes: "Some notes",
-        favorite: true,
-    };
+    const { contact } = useLoaderData(); // Correctly call useLoaderData as a function
 
     return (
         <div id="contact">
@@ -41,7 +33,6 @@ export default function Contact() {
                     }
                 />
             </div>
-
             <div>
                 <h1>
                     {contact.first || contact.last ? (
@@ -53,7 +44,6 @@ export default function Contact() {
                     )}{" "}
                     <Favorite contact={contact} />
                 </h1>
-
                 {contact.twitter && (
                     <p>
                         <a
@@ -64,9 +54,7 @@ export default function Contact() {
                         </a>
                     </p>
                 )}
-
                 {contact.notes && <p>{contact.notes}</p>}
-
                 <div>
                     <Form action="edit">
                         <button type="submit">Edit</button>
@@ -94,11 +82,9 @@ export default function Contact() {
 
 function Favorite({ contact }) {
     const fetcher = useFetcher();
-
     const favorite = fetcher.formData
         ? fetcher.formData.get("favorite") === "true"
         : contact.favorite;
-
     return (
         <fetcher.Form method="post">
             <button

@@ -13,7 +13,6 @@ export default function EditContact() {
     const { contact } = useLoaderData();
     const navigate = useNavigate();
 
-    // Initialize state with contact data
     const [formData, setFormData] = useState({
         first: contact?.first || "",
         last: contact?.last || "",
@@ -22,7 +21,6 @@ export default function EditContact() {
         notes: contact?.notes || ""
     });
 
-    // Update state when contact data changes
     useEffect(() => {
         setFormData({
             first: contact?.first || "",
@@ -33,7 +31,6 @@ export default function EditContact() {
         });
     }, [contact]);
 
-    // Handle input changes
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prevData) => ({
